@@ -1,0 +1,2065 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Empresarial - NEXUS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --primary-bg: #0d1117;
+            --card-bg: #161b22;
+            --accent-color: #ff4f5a;
+            --accent-gradient: linear-gradient(135deg, #ff4f5a, #e8368f);
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --border-color: #30363d;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --info-color: #3b82f6;
+            --error-color: #ef4444;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+            padding-bottom: 80px; /* Espaço para a navegação inferior */
+        }
+
+        /* Header */
+        .header {
+            background: var(--accent-gradient);
+            padding: 30px;
+            position: relative;
+            box-shadow: var(--shadow);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-subtitle {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+
+        .highlight-btn {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 20px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .highlight-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Dashboard */
+        .dashboard {
+            padding: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent-gradient);
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+            border-color: var(--accent-color);
+        }
+
+        .metric-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--accent-gradient);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .metric-info {
+            flex: 1;
+        }
+
+        .metric-value {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .metric-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Search Section */
+        .search-section {
+            margin-bottom: 30px;
+        }
+
+        .search-bar {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .search-bar:focus-within {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(255, 79, 90, 0.1);
+        }
+
+        .search-input {
+            flex: 1;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 16px;
+            outline: none;
+            font-weight: 500;
+        }
+
+        .search-input::placeholder {
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        /* Sections */
+        .section {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .section:hover {
+            box-shadow: var(--shadow);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .see-all {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+
+        .see-all:hover {
+            background: rgba(255, 79, 90, 0.1);
+            transform: translateX(5px);
+        }
+
+        /* Interns Grid */
+        .interns-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .intern-card {
+            background: var(--primary-bg);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .intern-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--accent-gradient);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .intern-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+            border-color: var(--accent-color);
+        }
+
+        .intern-card:hover::before {
+            opacity: 1;
+        }
+
+        .intern-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .intern-avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--accent-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 18px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .intern-info {
+            flex: 1;
+        }
+
+        .intern-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+
+        .intern-course {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .intern-location {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .intern-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .skill-tag {
+            background: rgba(255, 79, 90, 0.1);
+            color: var(--accent-color);
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            border: 1px solid rgba(255, 79, 90, 0.3);
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .skill-tag:hover {
+            background: rgba(255, 79, 90, 0.2);
+            transform: scale(1.05);
+        }
+
+        .intern-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            padding: 10px 0;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .intern-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .action-btn.primary {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .action-btn.primary:hover {
+            background: #e0454f;
+            box-shadow: 0 4px 12px rgba(255, 79, 90, 0.3);
+        }
+
+        .action-btn:not(.primary):hover {
+            background: var(--card-bg);
+            border-color: var(--accent-color);
+        }
+
+        .action-btn.saved {
+            background: var(--success-color);
+            border-color: var(--success-color);
+            color: white;
+        }
+
+        .action-btn.saved:hover {
+            background: #0da271;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(255, 79, 90, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+            font-family: inherit;
+        }
+
+        .form-select {
+            cursor: pointer;
+        }
+
+        /* Buttons */
+        .create-btn {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .create-btn:hover {
+            background: #e0454f;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 79, 90, 0.3);
+        }
+
+        .create-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Profile Styles */
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: var(--accent-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .profile-info h2 {
+            margin-bottom: 5px;
+            font-size: 24px;
+        }
+
+        .profile-info p {
+            color: var(--text-secondary);
+            margin-bottom: 3px;
+        }
+
+        /* Posts List */
+        .posts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .post-item {
+            background: var(--primary-bg);
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .post-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-color: var(--accent-color);
+        }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .post-title {
+            font-weight: 600;
+            font-size: 16px;
+            color: var(--text-primary);
+        }
+
+        .post-date {
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .post-content {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+
+        .post-stats {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            flex-wrap: wrap;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .status-inactive {
+            background: rgba(107, 114, 128, 0.1);
+            color: var(--text-secondary);
+            border: 1px solid rgba(107, 114, 128, 0.3);
+        }
+
+        .status-pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            background: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 12px;
+            transition: all 0.3s ease;
+            padding: 8px 12px;
+            border-radius: 8px;
+            min-width: 60px;
+        }
+
+        .nav-item.active {
+            color: var(--accent-color);
+            background: rgba(255, 79, 90, 0.1);
+        }
+
+        .nav-item:hover {
+            color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
+
+        /* Empty States */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+            grid-column: 1 / -1;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .empty-state p {
+            color: var(--text-secondary);
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .metric-card {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .intern-card {
+            animation: slideInLeft 0.6s ease-out;
+        }
+
+        .post-item {
+            animation: slideInRight 0.6s ease-out;
+        }
+
+        /* Notification System */
+        .nexus-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--success-color);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            z-index: 10000;
+            max-width: 400px;
+            animation: slideInRight 0.3s ease-out;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .notification-error {
+            background: var(--error-color);
+        }
+
+        .notification-warning {
+            background: var(--warning-color);
+        }
+
+        .notification-info {
+            background: var(--info-color);
+        }
+
+        .notification-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .interns-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 20px;
+            }
+            
+            .header-title {
+                font-size: 24px;
+            }
+            
+            .highlight-btn {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin-top: 15px;
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .dashboard {
+                padding: 20px;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .interns-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .see-all {
+                align-self: flex-end;
+            }
+            
+            .intern-actions {
+                flex-direction: column;
+            }
+            
+            .action-btn {
+                width: 100%;
+            }
+            
+            .nav-item {
+                min-width: 50px;
+                padding: 6px 8px;
+            }
+            
+            .nav-icon {
+                font-size: 18px;
+            }
+            
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .section {
+                padding: 20px 15px;
+            }
+            
+            .metric-card {
+                padding: 20px;
+            }
+            
+            .intern-stats {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .post-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .bottom-nav {
+                padding: 10px 0;
+            }
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--primary-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #e0454f;
+        }
+
+        /* Selection Styling */
+        ::selection {
+            background: rgba(255, 79, 90, 0.3);
+            color: white;
+        }
+
+        /* Focus States */
+        button:focus,
+        input:focus,
+        textarea:focus,
+        select:focus,
+        a:focus {
+            outline: 2px solid var(--accent-color);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <h1 class="header-title" id="pageTitle">Painel Empresarial</h1>
+            <p class="header-subtitle" id="pageSubtitle">Encontre os melhores talentos</p>
+        </div>
+        <button class="highlight-btn" id="highlightBtn">
+            ⭐ Destaque
+        </button>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard">
+        <!-- Página Inicial -->
+        <div class="page active" id="page-home">
+            <!-- Metrics -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-icon">📊</div>
+                    <div class="metric-info">
+                        <div class="metric-value">8</div>
+                        <div class="metric-label">Vagas Ativas</div>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon">👥</div>
+                    <div class="metric-info">
+                        <div class="metric-value">45</div>
+                        <div class="metric-label">Candidatos</div>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon">👀</div>
+                    <div class="metric-info">
+                        <div class="metric-value">1.2k</div>
+                        <div class="metric-label">Visualizações</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search -->
+            <div class="search-section">
+                <div class="search-bar">
+                    <div>🔍</div>
+                    <input type="text" class="search-input" placeholder="Buscar estagiários por habilidades..." id="searchInput">
+                </div>
+            </div>
+
+            <!-- Featured Interns -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Estagiários em Destaque</h2>
+                    <a href="#" class="see-all" id="seeAllInterns">Ver todos →</a>
+                </div>
+                <div class="interns-grid" id="internsGrid">
+                    <!-- Os cards serão preenchidos pelo JavaScript -->
+                </div>
+            </div>
+
+            <!-- Recent Posts -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Publicações Recentes</h2>
+                    <a href="#" class="see-all" id="seeAllPosts">Ver todas →</a>
+                </div>
+                <div class="posts-list" id="postsList">
+                    <!-- Posts serão preenchidos pelo JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Página Estagiários -->
+        <div class="page" id="page-interns">
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Todos os Estagiários</h2>
+                    <div class="search-bar" style="max-width: 400px;">
+                        <div>🔍</div>
+                        <input type="text" class="search-input" placeholder="Buscar estagiários..." id="internSearch">
+                    </div>
+                </div>
+                <div class="interns-grid" id="allInternsGrid">
+                    <!-- Todos os estagiários serão carregados aqui -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Página Criar Vaga -->
+        <div class="page" id="page-create">
+            <div class="section">
+                <h2 class="section-title" style="margin-bottom: 25px;">Criar Nova Vaga</h2>
+                <form id="createJobForm">
+                    <div class="form-group">
+                        <label class="form-label">Título da Vaga</label>
+                        <input type="text" class="form-input" placeholder="Ex: Desenvolvedor Front-end Júnior" id="jobTitle" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Descrição da Vaga</label>
+                        <textarea class="form-textarea" placeholder="Descreva as responsabilidades e requisitos..." id="jobDescription" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Habilidades Requeridas</label>
+                        <input type="text" class="form-input" placeholder="Ex: React, JavaScript, CSS" id="jobSkills" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Tipo de Contratação</label>
+                        <select class="form-select" id="jobType">
+                            <option>Estágio</option>
+                            <option>CLT</option>
+                            <option>PJ</option>
+                            <option>Freelance</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Salário/Bolsa</label>
+                        <input type="text" class="form-input" placeholder="Ex: R$ 1.500 - R$ 2.000" id="jobSalary">
+                    </div>
+                    
+                    <button type="submit" class="create-btn">
+                        📢 Publicar Vaga
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Página Publicações -->
+        <div class="page" id="page-posts">
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Minhas Publicações</h2>
+                    <button type="button" class="create-btn" id="newPostBtn">
+                        ➕ Nova Publicação
+                    </button>
+                </div>
+                <div class="search-bar" style="margin-bottom: 20px;">
+                    <div>🔍</div>
+                    <input type="text" class="search-input" placeholder="Buscar publicações..." id="postSearch">
+                </div>
+                <div id="myPostsList">
+                    <!-- Publicações da empresa serão carregadas aqui -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Página Perfil -->
+        <div class="page" id="page-profile">
+            <div class="section">
+                <div class="profile-header">
+                    <div class="profile-avatar" id="profileAvatar">TS</div>
+                    <div class="profile-info">
+                        <h2 id="profileName">Tech Solutions LTDA</h2>
+                        <p id="profileEmail">contato@techsolutions.com</p>
+                        <p id="profilePlan">Plano: Premium</p>
+                    </div>
+                </div>
+
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label class="form-label">Nome da Empresa</label>
+                        <input type="text" class="form-input" id="companyName" value="Tech Solutions LTDA" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" id="companyEmail" value="contato@techsolutions.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Telefone</label>
+                        <input type="tel" class="form-input" id="companyPhone" value="(11) 99999-9999" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Setor de Atuação</label>
+                        <select class="form-select" id="companySector">
+                            <option value="Tecnologia" selected>Tecnologia</option>
+                            <option value="Consultoria">Consultoria</option>
+                            <option value="Finanças">Finanças</option>
+                            <option value="Saúde">Saúde</option>
+                            <option value="Educação">Educação</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Sobre a Empresa</label>
+                        <textarea class="form-textarea" id="companyDescription">Somos uma empresa de tecnologia focada em soluções inovadoras para transformação digital. Nossa missão é conectar talentos promissores com oportunidades de crescimento.</textarea>
+                    </div>
+
+                    <button type="submit" class="create-btn">
+                        💾 Salvar Alterações
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="#" class="nav-item active" data-page="page-home">
+            <div class="nav-icon">🏠</div>
+            <span>Início</span>
+        </a>
+        <a href="#" class="nav-item" data-page="page-interns">
+            <div class="nav-icon">👩‍🎓</div>
+            <span>Estagiários</span>
+        </a>
+        <a href="#" class="nav-item" data-page="page-create">
+            <div class="nav-icon">➕</div>
+            <span>Criar</span>
+        </a>
+        <a href="#" class="nav-item" data-page="page-posts">
+            <div class="nav-icon">📢</div>
+            <span>Publicações</span>
+        </a>
+        <a href="#" class="nav-item" data-page="page-profile">
+            <div class="nav-icon">👤</div>
+            <span>Perfil</span>
+        </a>
+    </div>
+
+    <script>
+        // script-dashboard.js - NEXUS Dashboard
+
+        class NexusDashboard {
+            constructor() {
+                this.currentUser = null;
+                this.currentPage = 'page-home';
+                this.featuredInterns = [];
+                this.allInterns = [];
+                this.recentPosts = [];
+                this.myPosts = [];
+                this.savedInterns = new Set();
+                this.notifications = [];
+                
+                this.init();
+            }
+
+            init() {
+                this.loadUserData();
+                this.loadSampleData();
+                this.setupEventListeners();
+                this.setupNavigation();
+                this.setupSearch();
+                this.setupForms();
+                this.renderCurrentPage();
+                
+                console.log('🚀 NEXUS Dashboard inicializado com sucesso!');
+            }
+
+            // Carregar dados do usuário
+            loadUserData() {
+                this.currentUser = {
+                    id: 1,
+                    name: 'Tech Solutions LTDA',
+                    email: 'contato@techsolutions.com',
+                    phone: '(11) 99999-9999',
+                    sector: 'Tecnologia',
+                    plan: 'premium',
+                    joinDate: '2024-01-15',
+                    description: 'Somos uma empresa de tecnologia focada em soluções inovadoras...',
+                    avatar: 'TS'
+                };
+
+                this.updateUserProfile();
+            }
+
+            // Carregar dados de exemplo
+            loadSampleData() {
+                this.featuredInterns = [
+                    {
+                        id: 1,
+                        name: "Ana Carolina",
+                        initials: "AC",
+                        course: "Ciência da Computação - USP",
+                        skills: ["React", "Node.js", "Python", "TypeScript", "MongoDB"],
+                        rating: 4.8,
+                        projects: 12,
+                        location: "São Paulo, SP",
+                        availability: "Integral",
+                        salary: "R$ 2.000 - R$ 2.500",
+                        bio: "Desenvolvedora full-stack com experiência em React e Node.js. Apaixonada por resolver problemas complexos.",
+                        contact: "ana.carolina@email.com"
+                    },
+                    {
+                        id: 2,
+                        name: "Pedro Henrique",
+                        initials: "PH",
+                        course: "Engenharia de Software - UNICAMP",
+                        skills: ["Java", "Spring Boot", "AWS", "Docker", "MySQL"],
+                        rating: 4.9,
+                        projects: 8,
+                        location: "Campinas, SP",
+                        availability: "Meio período",
+                        salary: "R$ 1.800 - R$ 2.200",
+                        bio: "Especialista em desenvolvimento backend com Java. Experiência em arquitetura de microserviços.",
+                        contact: "pedro.henrique@email.com"
+                    },
+                    {
+                        id: 3,
+                        name: "Julia Santos",
+                        initials: "JS",
+                        course: "Design Digital - UFRJ",
+                        skills: ["Figma", "UI/UX", "Adobe XD", "Prototipagem", "Design System"],
+                        rating: 4.7,
+                        projects: 15,
+                        location: "Rio de Janeiro, RJ",
+                        availability: "Integral",
+                        salary: "R$ 1.900 - R$ 2.400",
+                        bio: "Designer UX/UI com foco em experiência do usuário. Criativa e detalhista.",
+                        contact: "julia.santos@email.com"
+                    }
+                ];
+
+                this.allInterns = [
+                    ...this.featuredInterns,
+                    {
+                        id: 4,
+                        name: "Lucas Oliveira",
+                        initials: "LO",
+                        course: "Análise de Sistemas - UFMG",
+                        skills: ["React Native", "Firebase", "JavaScript", "MongoDB", "Git"],
+                        rating: 4.6,
+                        projects: 10,
+                        location: "Belo Horizonte, MG",
+                        availability: "Meio período",
+                        salary: "R$ 1.700 - R$ 2.100",
+                        bio: "Desenvolvedor mobile com React Native. Experiência em aplicações escaláveis.",
+                        contact: "lucas.oliveira@email.com"
+                    },
+                    {
+                        id: 5,
+                        name: "Mariana Costa",
+                        initials: "MC",
+                        course: "Sistemas de Informação - UFPR",
+                        skills: ["Python", "Django", "PostgreSQL", "Docker", "Linux"],
+                        rating: 4.8,
+                        projects: 9,
+                        location: "Curitiba, PR",
+                        availability: "Integral",
+                        salary: "R$ 2.100 - R$ 2.600",
+                        bio: "Desenvolvedora Python com foco em backend. Conhecimento em DevOps e infraestrutura.",
+                        contact: "mariana.costa@email.com"
+                    },
+                    {
+                        id: 6,
+                        name: "Rafael Silva",
+                        initials: "RS",
+                        course: "Engenharia da Computação - UFRGS",
+                        skills: ["C++", "Arduino", "IoT", "Python", "Embedded Systems"],
+                        rating: 4.5,
+                        projects: 7,
+                        location: "Porto Alegre, RS",
+                        availability: "Integral",
+                        salary: "R$ 2.200 - R$ 2.700",
+                        bio: "Engenheiro com especialização em sistemas embarcados e IoT. Proativo e analítico.",
+                        contact: "rafael.silva@email.com"
+                    }
+                ];
+
+                this.recentPosts = [
+                    {
+                        id: 1,
+                        title: "Nova Vaga: Desenvolvedor Front-end Júnior",
+                        date: "2 horas atrás",
+                        content: "Estamos buscando um desenvolvedor front-end júnior com experiência em React e TypeScript. Requisitos: HTML5, CSS3, JavaScript avançado.",
+                        type: "vaga",
+                        views: 124,
+                        applications: 8,
+                        status: "active"
+                    },
+                    {
+                        id: 2,
+                        title: "Workshop de Carreira em Tecnologia",
+                        date: "1 dia atrás",
+                        content: "Participe do nosso workshop gratuito sobre desenvolvimento de carreira em tecnologia. Inscrições abertas!",
+                        type: "evento",
+                        views: 89,
+                        registrations: 23,
+                        status: "active"
+                    }
+                ];
+
+                this.myPosts = [
+                    {
+                        id: 1,
+                        title: "Desenvolvedor Front-end Júnior",
+                        date: "Publicado há 2 horas",
+                        candidates: 8,
+                        status: "active",
+                        type: "vaga",
+                        skills: ["React", "JavaScript", "CSS", "HTML5"],
+                        salary: "R$ 2.000 - R$ 2.500"
+                    },
+                    {
+                        id: 2,
+                        title: "Estágio em DevOps",
+                        date: "Publicado há 3 dias",
+                        candidates: 12,
+                        status: "active",
+                        type: "vaga",
+                        skills: ["Docker", "AWS", "Linux", "Python"],
+                        salary: "R$ 1.800 - R$ 2.200"
+                    },
+                    {
+                        id: 3,
+                        title: "Designer UX/UI Pleno",
+                        date: "Publicado há 1 semana",
+                        candidates: 5,
+                        status: "closed",
+                        type: "vaga",
+                        skills: ["Figma", "UI/UX", "Prototipagem"],
+                        salary: "R$ 3.500 - R$ 4.500"
+                    }
+                ];
+
+                // Carregar salvos do localStorage
+                this.loadSavedInterns();
+            }
+
+            // Configurar event listeners
+            setupEventListeners() {
+                // Botão de destaque
+                document.getElementById('highlightBtn')?.addEventListener('click', () => {
+                    this.handleHighlight();
+                });
+
+                // Links "Ver todos"
+                document.getElementById('seeAllInterns')?.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.showPage('page-interns');
+                });
+
+                document.getElementById('seeAllPosts')?.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.showPage('page-posts');
+                });
+
+                // Botão nova publicação
+                document.getElementById('newPostBtn')?.addEventListener('click', () => {
+                    this.showPage('page-create');
+                });
+
+                // Delegation de eventos para ações dinâmicas
+                document.addEventListener('click', (e) => {
+                    this.handleDynamicActions(e);
+                });
+            }
+
+            // Configurar navegação
+            setupNavigation() {
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const pageId = item.getAttribute('data-page');
+                        this.showPage(pageId);
+                    });
+                });
+            }
+
+            // Configurar busca
+            setupSearch() {
+                const searchInput = document.getElementById('searchInput');
+                if (searchInput) {
+                    let searchTimeout;
+                    
+                    searchInput.addEventListener('input', (e) => {
+                        clearTimeout(searchTimeout);
+                        searchTimeout = setTimeout(() => {
+                            this.filterInterns(e.target.value, 'featured');
+                        }, 300);
+                    });
+                }
+
+                // Busca na página de estagiários
+                const internSearch = document.getElementById('internSearch');
+                if (internSearch) {
+                    internSearch.addEventListener('input', (e) => {
+                        this.filterInterns(e.target.value, 'all');
+                    });
+                }
+
+                // Busca na página de publicações
+                const postSearch = document.getElementById('postSearch');
+                if (postSearch) {
+                    postSearch.addEventListener('input', (e) => {
+                        this.filterPosts(e.target.value);
+                    });
+                }
+            }
+
+            // Configurar formulários
+            setupForms() {
+                // Formulário de criação de vaga
+                const jobForm = document.getElementById('createJobForm');
+                if (jobForm) {
+                    jobForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.handleCreateJob(jobForm);
+                    });
+                }
+
+                // Formulário de perfil
+                const profileForm = document.getElementById('profileForm');
+                if (profileForm) {
+                    profileForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.handleProfileUpdate(profileForm);
+                    });
+                }
+            }
+
+            // Mostrar página
+            showPage(pageId) {
+                // Esconder todas as páginas
+                document.querySelectorAll('.page').forEach(page => {
+                    page.classList.remove('active');
+                });
+                
+                // Mostrar página selecionada
+                document.getElementById(pageId).classList.add('active');
+                this.currentPage = pageId;
+                
+                // Atualizar navegação
+                this.updateNavigation(pageId);
+                
+                // Atualizar título
+                this.updatePageTitle(pageId);
+                
+                // Renderizar conteúdo específico
+                this.renderPageContent(pageId);
+            }
+
+            // Atualizar navegação
+            updateNavigation(pageId) {
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.classList.remove('active');
+                    if (item.getAttribute('data-page') === pageId) {
+                        item.classList.add('active');
+                    }
+                });
+            }
+
+            // Atualizar título da página
+            updatePageTitle(pageId) {
+                const titles = {
+                    'page-home': { 
+                        title: 'Painel Empresarial', 
+                        subtitle: 'Encontre os melhores talentos' 
+                    },
+                    'page-interns': { 
+                        title: 'Estagiários', 
+                        subtitle: 'Encontre talentos promissores' 
+                    },
+                    'page-create': { 
+                        title: 'Criar Vaga', 
+                        subtitle: 'Publique novas oportunidades' 
+                    },
+                    'page-posts': { 
+                        title: 'Minhas Publicações', 
+                        subtitle: 'Gerencie suas vagas' 
+                    },
+                    'page-profile': { 
+                        title: 'Meu Perfil', 
+                        subtitle: 'Gerencie sua conta' 
+                    }
+                };
+                
+                const pageInfo = titles[pageId] || titles['page-home'];
+                document.getElementById('pageTitle').textContent = pageInfo.title;
+                document.getElementById('pageSubtitle').textContent = pageInfo.subtitle;
+            }
+
+            // Renderizar conteúdo da página atual
+            renderCurrentPage() {
+                this.renderPageContent(this.currentPage);
+            }
+
+            // Renderizar conteúdo específico da página
+            renderPageContent(pageId) {
+                switch (pageId) {
+                    case 'page-home':
+                        this.renderHomePage();
+                        break;
+                    case 'page-interns':
+                        this.renderInternsPage();
+                        break;
+                    case 'page-posts':
+                        this.renderPostsPage();
+                        break;
+                    case 'page-profile':
+                        this.renderProfilePage();
+                        break;
+                }
+            }
+
+            // Renderizar página inicial
+            renderHomePage() {
+                this.renderFeaturedInterns();
+                this.renderRecentPosts();
+                this.updateMetrics();
+            }
+
+            // Renderizar estagiários em destaque
+            renderFeaturedInterns() {
+                const internsGrid = document.getElementById('internsGrid');
+                if (internsGrid) {
+                    internsGrid.innerHTML = this.featuredInterns
+                        .map(intern => this.createInternCard(intern, true))
+                        .join('');
+                }
+            }
+
+            // Renderizar todos os estagiários
+            renderInternsPage() {
+                const allInternsGrid = document.getElementById('allInternsGrid');
+                if (allInternsGrid) {
+                    allInternsGrid.innerHTML = this.allInterns
+                        .map(intern => this.createInternCard(intern, false))
+                        .join('');
+                }
+            }
+
+            // Renderizar publicações
+            renderPostsPage() {
+                this.renderMyPosts();
+            }
+
+            // Renderizar perfil
+            renderProfilePage() {
+                // Já é preenchido pelo updateUserProfile
+            }
+
+            // Renderizar posts recentes
+            renderRecentPosts() {
+                const postsList = document.getElementById('postsList');
+                if (postsList) {
+                    postsList.innerHTML = this.recentPosts
+                        .map(post => this.createPostItem(post))
+                        .join('');
+                }
+            }
+
+            // Renderizar minhas publicações
+            renderMyPosts() {
+                const myPostsList = document.getElementById('myPostsList');
+                if (myPostsList) {
+                    if (this.myPosts.length === 0) {
+                        myPostsList.innerHTML = this.createEmptyState(
+                            'Nenhuma publicação',
+                            'Comece criando sua primeira vaga!',
+                            '📋'
+                        );
+                    } else {
+                        myPostsList.innerHTML = this.myPosts
+                            .map(post => this.createMyPostItem(post))
+                            .join('');
+                    }
+                }
+            }
+
+            // Atualizar métricas
+            updateMetrics() {
+                const metrics = {
+                    activeJobs: this.myPosts.filter(post => post.status === 'active').length,
+                    candidates: this.myPosts.reduce((acc, post) => acc + post.candidates, 0),
+                    views: Math.floor(Math.random() * 500) + 1200
+                };
+
+                document.querySelectorAll('.metric-value').forEach((element, index) => {
+                    const values = Object.values(metrics);
+                    if (values[index]) {
+                        this.animateValue(element, 0, values[index], 1000);
+                    }
+                });
+            }
+
+            // Atualizar perfil do usuário
+            updateUserProfile() {
+                if (!this.currentUser) return;
+
+                const profileAvatar = document.getElementById('profileAvatar');
+                const profileName = document.getElementById('profileName');
+                const profileEmail = document.getElementById('profileEmail');
+                const profilePlan = document.getElementById('profilePlan');
+                
+                if (profileAvatar) profileAvatar.textContent = this.currentUser.avatar;
+                if (profileName) profileName.textContent = this.currentUser.name;
+                if (profileEmail) profileEmail.textContent = this.currentUser.email;
+                if (profilePlan) profilePlan.textContent = `Plano: ${this.currentUser.plan}`;
+
+                // Preencher formulário de perfil
+                this.fillProfileForm();
+            }
+
+            // Preencher formulário de perfil
+            fillProfileForm() {
+                const form = document.getElementById('profileForm');
+                if (!form || !this.currentUser) return;
+
+                document.getElementById('companyName').value = this.currentUser.name;
+                document.getElementById('companyEmail').value = this.currentUser.email;
+                document.getElementById('companyPhone').value = this.currentUser.phone;
+                document.getElementById('companySector').value = this.currentUser.sector;
+                document.getElementById('companyDescription').value = this.currentUser.description;
+            }
+
+            // Criar card de estagiário
+            createInternCard(intern, isFeatured = false) {
+                const isSaved = this.savedInterns.has(intern.id);
+                
+                return `
+                    <div class="intern-card" data-intern-id="${intern.id}">
+                        <div class="intern-header">
+                            <div class="intern-avatar">${intern.initials}</div>
+                            <div class="intern-info">
+                                <div class="intern-name">${intern.name}</div>
+                                <div class="intern-course">${intern.course}</div>
+                                <div class="intern-location">
+                                    📍 ${intern.location} • ${intern.availability}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="intern-skills">
+                            ${intern.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+                        </div>
+                        <div class="intern-stats">
+                            <span>⭐ ${intern.rating}/5.0</span>
+                            <span>📁 ${intern.projects} projetos</span>
+                            <span>💰 ${intern.salary}</span>
+                        </div>
+                        <div class="intern-actions">
+                            <button class="action-btn" data-action="view-cv">
+                                👁️ Ver CV
+                            </button>
+                            <button class="action-btn primary" data-action="contact">
+                                💬 Contatar
+                            </button>
+                            <button class="action-btn ${isSaved ? 'saved' : ''}" data-action="save">
+                                ${isSaved ? '✅ Salvo' : '💾 Salvar'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Criar item de post
+            createPostItem(post) {
+                return `
+                    <div class="post-item" data-post-id="${post.id}">
+                        <div class="post-header">
+                            <div class="post-title">
+                                ${post.type === 'vaga' ? '📋' : '🎯'} 
+                                ${post.title}
+                            </div>
+                            <div class="post-date">${post.date}</div>
+                        </div>
+                        <div class="post-content">${post.content}</div>
+                        <div class="post-stats">
+                            <span>👀 ${post.views} visualizações</span>
+                            <span>
+                                ${post.type === 'vaga' ? '📄' : '👥'} 
+                                ${post.type === 'vaga' ? post.applications + ' candidaturas' : post.registrations + ' inscrições'}
+                            </span>
+                            <span class="status-badge status-${post.status}">
+                                ${post.status === 'active' ? 'Ativo' : 'Inativo'}
+                            </span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Criar item de minha publicação
+            createMyPostItem(post) {
+                return `
+                    <div class="intern-card" data-post-id="${post.id}">
+                        <div class="intern-header">
+                            <div class="intern-info">
+                                <div class="intern-name">${post.title}</div>
+                                <div class="intern-course">
+                                    ${post.date} • ${post.candidates} candidatos
+                                </div>
+                            </div>
+                        </div>
+                        <div class="intern-skills">
+                            ${post.skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+                        </div>
+                        <div class="intern-stats">
+                            <span>💰 ${post.salary}</span>
+                            <span class="status-badge status-${post.status}">
+                                ${post.status === 'active' ? 'Ativa' : 'Encerrada'}
+                            </span>
+                        </div>
+                        <div class="intern-actions">
+                            <button class="action-btn" data-action="edit-post">
+                                ✏️ Editar
+                            </button>
+                            <button class="action-btn primary" data-action="view-candidates">
+                                👥 Candidatos (${post.candidates})
+                            </button>
+                            <button class="action-btn ${post.status === 'active' ? 'danger' : 'secondary'}" 
+                                    data-action="${post.status === 'active' ? 'close-post' : 'reopen-post'}">
+                                ${post.status === 'active' ? '❌ Encerrar' : '🔄 Reabrir'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Criar estado vazio
+            createEmptyState(title, message, icon = '📋') {
+                return `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">${icon}</div>
+                        <h3>${title}</h3>
+                        <p>${message}</p>
+                    </div>
+                `;
+            }
+
+            // Filtrar estagiários
+            filterInterns(searchTerm, type = 'featured') {
+                const interns = type === 'featured' ? this.featuredInterns : this.allInterns;
+                const gridId = type === 'featured' ? 'internsGrid' : 'allInternsGrid';
+                
+                if (!searchTerm.trim()) {
+                    document.getElementById(gridId).innerHTML = interns
+                        .map(intern => this.createInternCard(intern, type === 'featured'))
+                        .join('');
+                    return;
+                }
+
+                const term = searchTerm.toLowerCase();
+                const filteredInterns = interns.filter(intern => 
+                    intern.name.toLowerCase().includes(term) ||
+                    intern.course.toLowerCase().includes(term) ||
+                    intern.skills.some(skill => skill.toLowerCase().includes(term)) ||
+                    intern.location.toLowerCase().includes(term)
+                );
+
+                const grid = document.getElementById(gridId);
+                if (filteredInterns.length === 0) {
+                    grid.innerHTML = this.createEmptyState(
+                        'Nenhum estagiário encontrado',
+                        'Tente ajustar os termos da sua busca',
+                        '🔍'
+                    );
+                } else {
+                    grid.innerHTML = filteredInterns
+                        .map(intern => this.createInternCard(intern, type === 'featured'))
+                        .join('');
+                }
+            }
+
+            // Filtrar publicações
+            filterPosts(searchTerm) {
+                if (!searchTerm.trim()) {
+                    this.renderMyPosts();
+                    return;
+                }
+
+                const term = searchTerm.toLowerCase();
+                const filteredPosts = this.myPosts.filter(post => 
+                    post.title.toLowerCase().includes(term) ||
+                    post.skills.some(skill => skill.toLowerCase().includes(term))
+                );
+
+                const myPostsList = document.getElementById('myPostsList');
+                if (filteredPosts.length === 0) {
+                    myPostsList.innerHTML = this.createEmptyState(
+                        'Nenhuma publicação encontrada',
+                        'Tente ajustar os termos da sua busca',
+                        '🔍'
+                    );
+                } else {
+                    myPostsList.innerHTML = filteredPosts
+                        .map(post => this.createMyPostItem(post))
+                        .join('');
+                }
+            }
+
+            // Handlers de ações
+            handleDynamicActions(e) {
+                const button = e.target.closest('.action-btn');
+                if (!button) return;
+
+                const action = button.getAttribute('data-action');
+                const card = button.closest('[data-intern-id], [data-post-id]');
+
+                if (card) {
+                    const id = card.getAttribute('data-intern-id') || card.getAttribute('data-post-id');
+                    
+                    switch (action) {
+                        case 'view-cv':
+                            this.viewCV(parseInt(id));
+                            break;
+                        case 'contact':
+                            this.contactIntern(parseInt(id));
+                            break;
+                        case 'save':
+                            this.toggleSaveIntern(parseInt(id), button);
+                            break;
+                        case 'edit-post':
+                            this.editPost(parseInt(id));
+                            break;
+                        case 'view-candidates':
+                            this.viewCandidates(parseInt(id));
+                            break;
+                        case 'close-post':
+                        case 'reopen-post':
+                            this.togglePostStatus(parseInt(id), button);
+                            break;
+                    }
+                }
+            }
+
+            // Handlers específicos
+            handleHighlight() {
+                this.showNotification('Recurso de destaque ativado! Sua empresa terá maior visibilidade por 7 dias.', 'success');
+            }
+
+            async handleCreateJob(form) {
+                const jobData = {
+                    title: document.getElementById('jobTitle').value,
+                    description: document.getElementById('jobDescription').value,
+                    skills: document.getElementById('jobSkills').value.split(',').map(skill => skill.trim()),
+                    type: document.getElementById('jobType').value,
+                    salary: document.getElementById('jobSalary').value
+                };
+
+                // Validação
+                if (!jobData.title || !jobData.description) {
+                    this.showNotification('Preencha todos os campos obrigatórios!', 'error');
+                    return;
+                }
+
+                // Simular criação da vaga
+                this.showNotification('Criando vaga...', 'info');
+                
+                await this.delay(1500); // Simular API call
+
+                const newPost = {
+                    id: Date.now(),
+                    title: jobData.title,
+                    date: 'Agora mesmo',
+                    candidates: 0,
+                    status: 'active',
+                    type: 'vaga',
+                    skills: jobData.skills,
+                    salary: jobData.salary
+                };
+
+                this.myPosts.unshift(newPost);
+                form.reset();
+                
+                this.showNotification('Vaga publicada com sucesso!', 'success');
+                this.showPage('page-posts');
+            }
+
+            async handleProfileUpdate(form) {
+                const formData = {
+                    name: document.getElementById('companyName').value,
+                    email: document.getElementById('companyEmail').value,
+                    phone: document.getElementById('companyPhone').value,
+                    sector: document.getElementById('companySector').value,
+                    description: document.getElementById('companyDescription').value
+                };
+
+                this.showNotification('Atualizando perfil...', 'info');
+                
+                await this.delay(1000); // Simular API call
+
+                Object.assign(this.currentUser, formData);
+                this.updateUserProfile();
+                
+                this.showNotification('Perfil atualizado com sucesso!', 'success');
+            }
+
+            // Ações dos estagiários
+            viewCV(internId) {
+                const intern = this.allInterns.find(i => i.id === internId);
+                if (intern) {
+                    this.showNotification(`Abrindo CV de ${intern.name}...`, 'info');
+                    // Em produção, abriria um modal ou nova página
+                    setTimeout(() => {
+                        alert(`CV de ${intern.name}\n\n${intern.bio}\n\nContato: ${intern.contact}`);
+                    }, 500);
+                }
+            }
+
+            contactIntern(internId) {
+                const intern = this.allInterns.find(i => i.id === internId);
+                if (intern) {
+                    this.showNotification(`Iniciando conversa com ${intern.name}...`, 'info');
+                    // Em produção, abriria um chat
+                    setTimeout(() => {
+                        alert(`Chat iniciado com ${intern.name}\n\nEmail: ${intern.contact}`);
+                    }, 500);
+                }
+            }
+
+            toggleSaveIntern(internId, button) {
+                if (this.savedInterns.has(internId)) {
+                    this.savedInterns.delete(internId);
+                    button.textContent = '💾 Salvar';
+                    button.classList.remove('saved');
+                    this.showNotification('Estagiário removido dos salvos', 'info');
+                } else {
+                    this.savedInterns.add(internId);
+                    button.textContent = '✅ Salvo';
+                    button.classList.add('saved');
+                    this.showNotification('Estagiário salvo com sucesso!', 'success');
+                }
+                this.saveToLocalStorage();
+            }
+
+            // Ações das publicações
+            editPost(postId) {
+                const post = this.myPosts.find(p => p.id === postId);
+                if (post) {
+                    this.showNotification(`Editando vaga: ${post.title}`, 'info');
+                    // Em produção, abriria um formulário de edição
+                }
+            }
+
+            viewCandidates(postId) {
+                const post = this.myPosts.find(p => p.id === postId);
+                if (post) {
+                    this.showNotification(`Abrindo lista de candidatos para: ${post.title}`, 'info');
+                    // Em produção, abriria uma página de candidatos
+                }
+            }
+
+            togglePostStatus(postId, button) {
+                const post = this.myPosts.find(p => p.id === postId);
+                if (post) {
+                    const wasActive = post.status === 'active';
+                    post.status = wasActive ? 'closed' : 'active';
+                    
+                    if (wasActive) {
+                        button.textContent = '🔄 Reabrir';
+                        button.classList.remove('danger');
+                        this.showNotification('Vaga encerrada com sucesso!', 'success');
+                    } else {
+                        button.textContent = '❌ Encerrar';
+                        button.classList.add('danger');
+                        this.showNotification('Vaga reaberta com sucesso!', 'success');
+                    }
+                    
+                    this.renderMyPosts();
+                }
+            }
+
+            // Sistema de notificações
+            showNotification(message, type = 'info') {
+                // Remover notificação anterior
+                const existingNotification = document.querySelector('.nexus-notification');
+                if (existingNotification) {
+                    existingNotification.remove();
+                }
+
+                // Criar nova notificação
+                const notification = document.createElement('div');
+                notification.className = `nexus-notification notification-${type}`;
+                notification.innerHTML = `
+                    <div class="notification-content">
+                        <span class="notification-icon">
+                            ${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}
+                        </span>
+                        <span class="notification-message">${message}</span>
+                        <button class="notification-close">×</button>
+                    </div>
+                `;
+
+                document.body.appendChild(notification);
+
+                // Configurar fechamento
+                notification.querySelector('.notification-close').addEventListener('click', () => {
+                    notification.remove();
+                });
+
+                // Remover automaticamente
+                setTimeout(() => {
+                    if (notification.parentElement) {
+                        notification.remove();
+                    }
+                }, 5000);
+            }
+
+            // LocalStorage
+            saveToLocalStorage() {
+                localStorage.setItem('nexus_saved_interns', JSON.stringify([...this.savedInterns]));
+            }
+
+            loadSavedInterns() {
+                const saved = localStorage.getItem('nexus_saved_interns');
+                if (saved) {
+                    this.savedInterns = new Set(JSON.parse(saved));
+                }
+            }
+
+            // Utilitários
+            animateValue(element, start, end, duration) {
+                let startTimestamp = null;
+                const step = (timestamp) => {
+                    if (!startTimestamp) startTimestamp = timestamp;
+                    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                    const value = Math.floor(progress * (end - start) + start);
+                    
+                    if (end >= 1000) {
+                        element.textContent = (value / 1000).toFixed(1) + 'k';
+                    } else {
+                        element.textContent = value;
+                    }
+                    
+                    if (progress < 1) {
+                        window.requestAnimationFrame(step);
+                    }
+                };
+                window.requestAnimationFrame(step);
+            }
+
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+
+            // Métodos públicos para debug
+            getStats() {
+                return {
+                    totalInterns: this.allInterns.length,
+                    activePosts: this.myPosts.filter(p => p.status === 'active').length,
+                    savedInterns: this.savedInterns.size,
+                    user: this.currentUser
+                };
+            }
+        }
+
+        // Inicializar a aplicação
+        document.addEventListener('DOMContentLoaded', () => {
+            window.nexusApp = new NexusDashboard();
+        });
+    </script>
+</body>
+</html>

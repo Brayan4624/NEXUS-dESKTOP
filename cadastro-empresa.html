@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro Empresarial - NEXUS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #0d1117;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #ff4f5a, #ff7b86);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .logo-icon::before {
+            content: "N";
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .logo-subtitle {
+            color: #b0b0b0;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .register-card {
+            background-color: #161b22;
+            border-radius: 16px;
+            padding: 30px;
+            width: 100%;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: none;
+            border: none;
+            color: #b0b0b0;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: color 0.3s;
+        }
+
+        .back-button:hover {
+            color: #ffffff;
+        }
+
+        .back-button::before {
+            content: "←";
+            margin-right: 5px;
+            font-size: 16px;
+        }
+
+        .card-header {
+            margin-bottom: 25px;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .card-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .card-subtitle {
+            color: #b0b0b0;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #b0b0b0;
+        }
+
+        .input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            color: #b0b0b0;
+            font-size: 16px;
+            z-index: 1;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 14px 14px 45px;
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #ff4f5a;
+            box-shadow: 0 0 0 2px rgba(255, 79, 90, 0.2);
+        }
+
+        .form-input::placeholder {
+            color: #6b7280;
+        }
+
+        .register-btn {
+            width: 100%;
+            padding: 14px;
+            background-color: #ff4f5a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .register-btn:hover {
+            background-color: #e0454f;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 79, 90, 0.3);
+        }
+
+        .register-btn:active {
+            transform: translateY(0);
+        }
+
+        .register-btn::after {
+            content: " →";
+            font-weight: bold;
+            margin-left: 5px;
+        }
+
+        .password-requirements {
+            color: #b0b0b0;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        /* Animações */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .register-card {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .logo {
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        /* Responsividade */
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+            
+            .register-card {
+                padding: 25px 20px;
+            }
+            
+            .logo-text {
+                font-size: 22px;
+            }
+            
+            .card-title {
+                font-size: 20px;
+            }
+        }
+
+        /* Estados de erro */
+        .form-group.error .form-input {
+            border-color: #ff4f5a;
+        }
+
+        .error-message {
+            color: #ff4f5a;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .form-group.error .error-message {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <div class="logo-icon"></div>
+            <div class="logo-text">NEXUS</div>
+            <div class="logo-subtitle">Conectando talentos e oportunidades</div>
+        </div>
+        
+        <div class="register-card">
+            <button class="back-button" id="backButton">Voltar</button>
+            
+            <div class="card-header">
+                <h2 class="card-title">Criar Conta</h2>
+                <p class="card-subtitle">Junte-se ao NEXUS</p>
+                <p class="card-subtitle" style="margin-top: 10px; font-weight: 500;">Criar conta Empresarial</p>
+            </div>
+            
+            <form id="companyForm">
+                <div class="form-group">
+                    <label class="form-label">Nome da Empresa</label>
+                    <div class="input-container">
+                        <div class="input-icon">🏢</div>
+                        <input type="text" class="form-input" placeholder="Digite o nome da sua empresa" id="companyName">
+                    </div>
+                    <div class="error-message">Por favor, insira o nome da empresa</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <div class="input-container">
+                        <div class="input-icon">✉️</div>
+                        <input type="email" class="form-input" placeholder="seu@email.com" id="email">
+                    </div>
+                    <div class="error-message">Por favor, insira um email válido</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Telefone</label>
+                    <div class="input-container">
+                        <div class="input-icon">📞</div>
+                        <input type="tel" class="form-input" placeholder="(11) 99999-9999" id="phone">
+                    </div>
+                    <div class="error-message">Por favor, insira um telefone válido</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Senha</label>
+                    <div class="input-container">
+                        <div class="input-icon">🔒</div>
+                        <input type="password" class="form-input" placeholder="Crie uma senha segura" id="password">
+                    </div>
+                    <div class="password-requirements">Mínimo de 8 caracteres, com letras e números</div>
+                    <div class="error-message">A senha deve ter pelo menos 8 caracteres</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Confirmar Senha</label>
+                    <div class="input-container">
+                        <div class="input-icon">🔒</div>
+                        <input type="password" class="form-input" placeholder="Digite a senha novamente" id="confirmPassword">
+                    </div>
+                    <div class="error-message">As senhas não coincidem</div>
+                </div>
+                
+                <button type="submit" class="register-btn">Criar Conta</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const backButton = document.getElementById('backButton');
+            const companyForm = document.getElementById('companyForm');
+            const formInputs = document.querySelectorAll('.form-input');
+            const formGroups = document.querySelectorAll('.form-group');
+
+            // Função para animação de clique
+            function animateClick(element) {
+                element.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    element.style.transform = '';
+                }, 150);
+            }
+
+            // Botão Voltar
+            backButton.addEventListener('click', function() {
+                animateClick(this);
+                // Voltar para a tela de seleção de tipo de conta
+                setTimeout(() => {
+                    window.location.href = 'criar-conta.html';
+                }, 300);
+            });
+
+            // Validação de formulário
+            function validateForm() {
+                let isValid = true;
+                const companyName = document.getElementById('companyName').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+
+                // Reset erros
+                clearErrors();
+
+                // Validar nome da empresa
+                if (!companyName) {
+                    showError('companyName', 'Por favor, insira o nome da empresa');
+                    isValid = false;
+                }
+
+                // Validar email
+                if (!email) {
+                    showError('email', 'Por favor, insira um email');
+                    isValid = false;
+                } else if (!validateEmail(email)) {
+                    showError('email', 'Por favor, insira um email válido');
+                    isValid = false;
+                }
+
+                // Validar telefone
+                if (!phone) {
+                    showError('phone', 'Por favor, insira um telefone');
+                    isValid = false;
+                } else if (!validatePhone(phone)) {
+                    showError('phone', 'Por favor, insira um telefone válido');
+                    isValid = false;
+                }
+
+                // Validar senha
+                if (!password) {
+                    showError('password', 'Por favor, insira uma senha');
+                    isValid = false;
+                } else if (password.length < 8) {
+                    showError('password', 'A senha deve ter pelo menos 8 caracteres');
+                    isValid = false;
+                }
+
+                // Validar confirmação de senha
+                if (!confirmPassword) {
+                    showError('confirmPassword', 'Por favor, confirme sua senha');
+                    isValid = false;
+                } else if (password !== confirmPassword) {
+                    showError('confirmPassword', 'As senhas não coincidem');
+                    isValid = false;
+                }
+
+                return isValid;
+            }
+
+            // Função para validar email
+            function validateEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+
+            // Função para validar telefone
+            function validatePhone(phone) {
+                // Aceita formatos como (11) 99999-9999, 11 999999999, etc.
+                const phoneRegex = /^\(?\d{2}\)?[\s-]?\d{4,5}[\s-]?\d{4}$/;
+                return phoneRegex.test(phone);
+            }
+
+            // Função para mostrar erro
+            function showError(fieldId, message) {
+                const field = document.getElementById(fieldId);
+                const formGroup = field.closest('.form-group');
+                formGroup.classList.add('error');
+                
+                const errorElement = formGroup.querySelector('.error-message');
+                if (errorElement) {
+                    errorElement.textContent = message;
+                }
+            }
+
+            // Função para limpar erros
+            function clearErrors() {
+                formGroups.forEach(group => {
+                    group.classList.remove('error');
+                });
+            }
+
+            // Event Listener para o formulário
+            companyForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (validateForm()) {
+                    // Simular envio do formulário
+                    const submitBtn = this.querySelector('.register-btn');
+                    submitBtn.textContent = 'Criando conta...';
+                    submitBtn.disabled = true;
+                    
+                    setTimeout(() => {
+                        showNotification('Conta criada com sucesso!', 'success');
+                        // Redirecionar para dashboard ou próxima tela
+                        setTimeout(() => {
+                            window.location.href = 'dashboard-empresa.html';
+                        }, 2000);
+                    }, 2000);
+                }
+            });
+
+            // Validação em tempo real
+            formInputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    if (this.value.trim()) {
+                        this.closest('.form-group').classList.remove('error');
+                    }
+                });
+            });
+
+            // Sistema de notificações
+            function showNotification(message, type = 'info') {
+                const existingNotification = document.querySelector('.notification');
+                if (existingNotification) {
+                    existingNotification.remove();
+                }
+
+                const notification = document.createElement('div');
+                notification.className = `notification notification-${type}`;
+                notification.textContent = message;
+
+                Object.assign(notification.style, {
+                    position: 'fixed',
+                    top: '20px',
+                    right: '20px',
+                    padding: '12px 20px',
+                    borderRadius: '8px',
+                    color: 'white',
+                    fontWeight: '500',
+                    zIndex: '1000',
+                    animation: 'slideIn 0.3s ease-out',
+                    maxWidth: '300px',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                    backgroundColor: type === 'success' ? '#10b981' : '#ff4f5a'
+                });
+
+                document.body.appendChild(notification);
+
+                setTimeout(() => {
+                    if (notification.parentElement) {
+                        notification.style.animation = 'slideOut 0.3s ease-in';
+                        setTimeout(() => {
+                            if (notification.parentElement) {
+                                notification.remove();
+                            }
+                        }, 300);
+                    }
+                }, 4000);
+            }
+
+            // Adicionar estilos de animação para notificações
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from {
+                        transform: translateX(100%);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                }
+                
+                @keyframes slideOut {
+                    from {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                    to {
+                        transform: translateX(100%);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+
+            console.log('NEXUS Company Registration Screen initialized');
+        });
+    </script>
+</body>
+</html>
